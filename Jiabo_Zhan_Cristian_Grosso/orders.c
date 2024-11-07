@@ -10,7 +10,7 @@
 enum {NO_FINISHED,FINISHED};
 static int orders_open(void);
 static int orders_range(void);
-static orders_detail(void);
+static int orders_detail(void);
 static void remove_space(char *s);
 void remove_space(char *s) {
     size_t n = strlen(s);
@@ -59,11 +59,6 @@ void ordersMenu() {
     }
     return;
 }
-
-int products_find(void) {
-     
-}
-
 
 static int orders_open(void){
     SQLHENV env = NULL; /* enviroment handle */
@@ -140,10 +135,14 @@ static int orders_range(void){
     SQLHDBC dbc = NULL;
     SQLHSTMT stmt = NULL;
     int ret; /* odbc.c */
+    int finished=0;
     SQLRETURN ret2; /* ODBC API return status */
     #define BufferLength 512
-    char x[BufferLength] = "\0";
-    char y[BufferLength] = "\0";
+    char x1[BufferLength] = "\0";
+    char x2[BufferLength] = "\0";
+    char orderNumber[BufferLength] = "\0";
+    char orderDate[BufferLength] = "\0";
+    char shippedDate[BufferLength] = "\0";
 
     /* CONNECT */
     ret = odbc_connect(&env, &dbc);
@@ -158,23 +157,27 @@ static int orders_range(void){
         return ret;
     }
 
-    printf("From Date [AAAA-MM-DD] = ");
+    printf("Date [YYYY-MM-DD] = ");
     (void) fflush(stdout);
-    while (fgets(x, sizeof(x), stdin) != NULL) {
-        printf("To Date [AAAA-MM-DD] = ");
+    while ((fgets(x1, (int) sizeof(x1), stdin) != NULL) && !finished) {
+        printf("Date [YYYY-MM-DD] = ");
         (void) fflush(stdout);
-        while(fgets(y, sizeof(y), stdin) != NULL) {
+        while ((fgets(x2, (int) sizeof(x2), stdin) != NULL) && !finished) {
             char query[BufferLength + 28];
             /* snprintf is not defined if ansi flag is enabled */
-            (void) snprintf(query, (size_t)(BufferLength + 27), "select ordernumber, orderdate, shippeddate from orders where orderdate > '%s' and orderdate < '%s';", x,y);
+            (void) snprintf(query, (size_t)(BufferLength + 40), "select ordernumber, orderdate, shippeddate from orders where orderdate >= '%s' and orderdate <= '%s';", x1,x2);
 
             (void) SQLExecDirect(stmt, (SQLCHAR*) query, SQL_NTS);
 
-            (void) SQLBindCol(stmt, 1, SQL_C_CHAR, (SQLCHAR*) y, BufferLength , NULL);
+            /* Vincula las columnas de la consulta a variables */
+            SQLBindCol(stmt, 1, SQL_C_CHAR, orderNumber, BufferLength, NULL);
+            SQLBindCol(stmt, 2, SQL_C_CHAR, orderDate, BufferLength, NULL);
+            SQLBindCol(stmt, 3, SQL_C_CHAR, shippedDate, BufferLength, NULL);
 
-            /* Loop through the rows in the result-set */
+            /* Recorre y muestra los resultados */
+            printf("Order Number\tOrder Date\tShipped Date:\n", orderNumber, orderDate, shippedDate);
             while (SQL_SUCCEEDED(ret = SQLFetch(stmt))) {
-                printf("y = %s\n", y);
+                printf("%s\t\t%s\t%s\n", orderNumber, orderDate, shippedDate);
             }
 
             ret2 = SQLCloseCursor(stmt);
@@ -182,12 +185,10 @@ static int orders_range(void){
                 odbc_extract_error("", stmt, SQL_HANDLE_STMT);
             return ret;
             }
-
-            printf("x = ");
-            ret = fflush(stdout);
+            finished=1;
         }
+        
     }
-    printf("\n");
     
     /* free up statement handle */
     ret2 = SQLFreeHandle(SQL_HANDLE_STMT, stmt);
@@ -204,6 +205,6 @@ static int orders_range(void){
 
     return EXIT_SUCCESS;
 }
-static orders_detail(void){
+static int orders_detail(void){
     return 0;
 }

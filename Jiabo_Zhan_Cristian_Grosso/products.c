@@ -70,7 +70,7 @@ int products_stock(void) {
     /* CONNECT */
     ret = odbc_connect(&env, &dbc);
     if (!SQL_SUCCEEDED(ret)) {
-        printf("Errpr in connect");
+        printf("Error in connect");
         return FINISHED;
     }
 
