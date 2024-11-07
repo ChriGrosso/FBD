@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-
+#include "products.h"
+#include "orders.h"
+#include "orders.h"
+enum {PRODUCTS = 1, ORDERS, CUSTOMERS, BYE};
 static int ShowMainMenu();
 
 /* #endif //A2BIS_MENU_TEMPLATE_H */
@@ -19,25 +21,28 @@ static int ShowMainMenu();
  */
 int main(void) {
     int nChoice = 0;
+
     do {
         nChoice = ShowMainMenu();
         switch (nChoice) {
-            case 1: {
+            case PRODUCTS: {
                 productsMenu();
-            }
                 break;
-
-            case 2: {
-                orderMenu();
             }
+            case ORDERS: {
+                ordersMenu();
                 break;
-            case 3: {
+            }
+            case CUSTOMERS: {
                 customersMenu();
-            }
-            case 4: {
-                printf("Bye Bye\n\n");
-            }
                 break;
+            }
+            case BYE: {
+                printf("Bye Bye\n\n");
+                break;
+            }
+                
+           
         }
     } while (nChoice != 4);
     return 0;
