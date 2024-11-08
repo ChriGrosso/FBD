@@ -157,10 +157,9 @@ static int orders_range(void){
         return ret;
     }
 
-    printf("Start Date [YYYY-MM-DD] = ");
+    printf("Enter dates (YYYY-MM-DD - YYYY-MM-DD) > ");
     (void) fflush(stdout);
     while ((fgets(x1, (int) sizeof(x1), stdin) != NULL) && !finished) {
-        printf("End Date [YYYY-MM-DD] = ");
         (void) fflush(stdout);
         fgets(x2, (int) sizeof(x2), stdin);
         char query[BufferLength + 28];
@@ -241,7 +240,7 @@ static int orders_detail(void){
         /* snprintf is not defined if ansi flag is enabled */
         (void) snprintf(query, (size_t)(BufferLength + 150), "Select ordernumber,orderdate, status, productcode,quantityordered,priceeach,orderlinenumber "
                                                             "from orders natural join orderdetails "
-                                                            "where ordernumber = %d;",atoi(x1));
+                                                            "where ordernumber = %d order by orderlinenumber;",atoi(x1));
         //group by ordernumber
         //order by orderlinenumber
 
@@ -257,11 +256,12 @@ static int orders_detail(void){
         SQLBindCol(stmt, 7, SQL_C_CHAR, orderLineNumber, BufferLength, NULL);
 
         /* Recorre y muestra los resultados */
-        printf("Order Number\tOrder Date\tStatus:\n");
+        printf("Order Number\tOrder Date\tStatus\n");
         if (SQL_SUCCEEDED(ret = SQLFetch(stmt))) 
-            printf("%s\t\t%s\t%s\n", orderNumber, orderDate, status);
+            printf("%s\t\t%s\t%s\n\n", orderNumber, orderDate, status);
+            printf("Line\tProduct Code\tQuantity\tPrice Each\n");
         do {
-            printf("%s\t\t%s\t%s\n",productCode, quantityOrdered, priceEach);
+            printf("%s\t%s\t%s\t\t%s\n",orderLineNumber,productCode, quantityOrdered, priceEach);
         }while (SQL_SUCCEEDED(ret = SQLFetch(stmt)));
 
         ret2 = SQLCloseCursor(stmt);
