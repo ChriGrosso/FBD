@@ -1,0 +1,239 @@
+customers.c: (in function customersMenu)
+customers.c:24:12: Suspected infinite loop.  No value used in loop test
+                      (finished) is modified by test or loop body.
+  This appears to be an infinite loop. Nothing in the body of the loop or the
+  loop test modifies the value of the loop test. Perhaps the specification of a
+  function called in the loop body is missing a modification. (Use -infloops to
+  inhibit warning)
+customers.c: (in function customers_find)
+customers.c:89:29: Null storage dbc passed as non-null param:
+                      SQLAllocHandle (..., dbc, ...)
+  A possibly null pointer is passed as a parameter corresponding to a formal
+  parameter with no /*@null@*/ annotation.  If NULL may be used for this
+  parameter, add a /*@null@*/ annotation to the function parameter declaration.
+  (Use -nullpass to inhibit warning)
+   customers.c:69:19: Storage dbc becomes null
+customers.c:96:22: Null storage stmt passed as non-null param:
+                      SQLPrepare (stmt, ...)
+   customers.c:70:21: Storage stmt becomes null
+customers.c:112:55: Null storage passed as non-null param:
+                       SQLBindParameter (..., NULL)
+customers.c:120:55: Null storage passed as non-null param:
+                       SQLBindParameter (..., NULL)
+customers.c:135:68: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:142:72: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:149:71: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:156:70: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:186:27: Null storage env passed as non-null param:
+                       odbc_disconnect (env, ...)
+   customers.c:68:19: Storage env becomes null
+customers.c: (in function customers_listProd)
+customers.c:218:29: Null storage dbc passed as non-null param:
+                       SQLAllocHandle (..., dbc, ...)
+   customers.c:199:19: Storage dbc becomes null
+customers.c:225:22: Null storage stmt passed as non-null param:
+                       SQLPrepare (stmt, ...)
+   customers.c:200:21: Storage stmt becomes null
+customers.c:240:52: Null storage passed as non-null param:
+                       SQLBindParameter (..., NULL)
+customers.c:255:67: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:262:67: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:269:61: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:297:27: Null storage env passed as non-null param:
+                       odbc_disconnect (env, ...)
+   customers.c:198:19: Storage env becomes null
+customers.c: (in function customers_balance)
+customers.c:326:29: Null storage dbc passed as non-null param:
+                       SQLAllocHandle (..., dbc, ...)
+   customers.c:308:19: Storage dbc becomes null
+customers.c:333:22: Null storage stmt passed as non-null param:
+                       SQLPrepare (stmt, ...)
+   customers.c:309:21: Storage stmt becomes null
+customers.c:348:52: Null storage passed as non-null param:
+                       SQLBindParameter (..., NULL)
+customers.c:355:52: Null storage passed as non-null param:
+                       SQLBindParameter (..., NULL)
+customers.c:371:65: Null storage passed as non-null param:
+                       SQLBindCol (..., NULL)
+customers.c:400:27: Null storage env passed as non-null param:
+                       odbc_disconnect (env, ...)
+   customers.c:307:19: Storage env becomes null
+odbc-connection-test-2.c:9:5: Function main defined more than once
+  A function or variable is redefined. One of the declarations should use
+  extern. (Use -redef to inhibit warning)
+   menu.c:53:1: Previous definition of main
+odbc-connection-test-2.c: (in function main)
+odbc-connection-test-2.c:17:46: Null storage dbc passed as non-null param:
+                                   odbc_extract_error (..., dbc, ...)
+   odbc-connection-test-2.c:11:19: Storage dbc becomes null
+odbc-connection-test-2.c:22:27: Null storage env passed as non-null param:
+                                   odbc_disconnect (env, ...)
+   odbc-connection-test-2.c:10:19: Storage env becomes null
+odbc-connection-test-2.c:22:32: Null storage dbc passed as non-null param:
+                                   odbc_disconnect (..., dbc)
+   odbc-connection-test-2.c:11:19: Storage dbc becomes null
+odbc-connection-test.c:9:5: Function main defined more than once
+   menu.c:53:1: Previous definition of main
+odbc-connection-test.c: (in function main)
+odbc-connection-test.c:19:29: Null storage passed as non-null param:
+                                 SQLAllocHandle (..., (SQLHANDLE *)0L, ...)
+odbc-connection-test.c:21:32: Null storage env passed as non-null param:
+                                 odbc_extract_error (..., env, ...)
+   odbc-connection-test.c:10:19: Storage env becomes null
+odbc-connection-test.c:25:25: Null storage env passed as non-null param:
+                                 SQLSetEnvAttr (env, ...)
+   odbc-connection-test.c:10:19: Storage env becomes null
+odbc-connection-test.c:33:32: Null storage dbc passed as non-null param:
+                                 odbc_extract_error (..., dbc, ...)
+   odbc-connection-test.c:11:19: Storage dbc becomes null
+odbc-connection-test.c:37:28: Null storage dbc passed as non-null param:
+                                 SQLDriverConnect (dbc, ...)
+   odbc-connection-test.c:11:19: Storage dbc becomes null
+odbc-connection-test.c:37:33: Null storage passed as non-null param:
+                                 SQLDriverConnect (..., (SQLHWND *)NULL, ...)
+odbc.c: (in function odbc_extract_error)
+odbc.c:33:47: Format argument 3 to printf (%d) expects int gets SQLINTEGER:
+                 native
+  Type of parameter is not consistent with corresponding code in format string.
+  (Use -formattype to inhibit warning)
+   odbc.c:33:28: Corresponding format code
+odbc.c: (in function odbc_connect)
+odbc.c:55:29: Null storage passed as non-null param:
+                 SQLAllocHandle (..., (SQLHANDLE *)0L, ...)
+odbc.c:76:34: Null storage passed as non-null param:
+                 SQLDriverConnect (..., (SQLHWND *)NULL, ...)
+odbc.c:77:135: Null storage passed as non-null param:
+                  SQLDriverConnect (..., NULL, ...)
+odbc.c:78:16: Null storage passed as non-null param:
+                 SQLDriverConnect (..., NULL, ...)
+orders.c: (in function ordersMenu)
+orders.c:21:12: Suspected infinite loop.  No value used in loop test (finished)
+                   is modified by test or loop body.
+orders.c: (in function orders_open)
+orders.c:79:29: Null storage dbc passed as non-null param:
+                   SQLAllocHandle (..., dbc, ...)
+   orders.c:64:19: Storage dbc becomes null
+orders.c:81:32: Null storage stmt passed as non-null param:
+                   odbc_extract_error (..., stmt, ...)
+   orders.c:65:21: Storage stmt becomes null
+orders.c:85:25: Null storage stmt passed as non-null param:
+                   SQLExecDirect (stmt, ...)
+   orders.c:65:21: Storage stmt becomes null
+orders.c:99:54: Null storage passed as non-null param: SQLGetData (..., NULL)
+orders.c:100:58: Null storage passed as non-null param: SQLGetData (..., NULL)
+orders.c:101:28: Format argument 1 to printf (%d) expects int gets SQLINTEGER:
+                    x
+   orders.c:101:18: Corresponding format code
+orders.c:110:27: Null storage env passed as non-null param:
+                    odbc_disconnect (env, ...)
+   orders.c:63:19: Storage env becomes null
+orders.c: (in function orders_range)
+orders.c:143:29: Null storage dbc passed as non-null param:
+                    SQLAllocHandle (..., dbc, ...)
+   orders.c:122:19: Storage dbc becomes null
+orders.c:150:22: Null storage stmt passed as non-null param:
+                    SQLPrepare (stmt, ...)
+   orders.c:123:21: Storage stmt becomes null
+orders.c:167:19: Possibly null storage toks passed as non-null param:
+                    strcpy (..., toks)
+   orders.c:166:16: Storage toks may become null
+orders.c:171:52: Null storage passed as non-null param:
+                    SQLBindParameter (..., NULL)
+orders.c:179:52: Null storage passed as non-null param:
+                    SQLBindParameter (..., NULL)
+orders.c:194:67: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:201:65: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:208:67: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:238:27: Null storage env passed as non-null param:
+                    odbc_disconnect (env, ...)
+   orders.c:121:19: Storage env becomes null
+orders.c: (in function orders_detail)
+orders.c:272:29: Null storage dbc passed as non-null param:
+                    SQLAllocHandle (..., dbc, ...)
+   orders.c:250:19: Storage dbc becomes null
+orders.c:279:22: Null storage stmt passed as non-null param:
+                    SQLPrepare (stmt, ...)
+   orders.c:251:21: Storage stmt becomes null
+orders.c:295:52: Null storage passed as non-null param:
+                    SQLBindParameter (..., NULL)
+orders.c:310:67: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:317:65: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:324:62: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:330:67: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:336:71: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:342:65: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:348:71: Null storage passed as non-null param: SQLBindCol (..., NULL)
+orders.c:379:27: Null storage env passed as non-null param:
+                    odbc_disconnect (env, ...)
+   orders.c:249:19: Storage env becomes null
+products.c: (in function productsMenu)
+products.c:23:12: Suspected infinite loop.  No value used in loop test
+                     (finished) is modified by test or loop body.
+products.c: (in function products_stock)
+products.c:78:29: Null storage dbc passed as non-null param:
+                     SQLAllocHandle (..., dbc, ...)
+   products.c:62:19: Storage dbc becomes null
+products.c:85:22: Null storage stmt passed as non-null param:
+                     SQLPrepare (stmt, ...)
+   products.c:63:21: Storage stmt becomes null
+products.c:99:51: Null storage passed as non-null param:
+                     SQLBindParameter (..., NULL)
+products.c:114:57: Null storage passed as non-null param:
+                      SQLBindCol (..., NULL)
+products.c:143:27: Null storage env passed as non-null param:
+                      odbc_disconnect (env, ...)
+   products.c:61:19: Storage env becomes null
+products.c: (in function products_find)
+products.c:171:29: Null storage dbc passed as non-null param:
+                      SQLAllocHandle (..., dbc, ...)
+   products.c:154:19: Storage dbc becomes null
+products.c:178:22: Null storage stmt passed as non-null param:
+                      SQLPrepare (stmt, ...)
+   products.c:155:21: Storage stmt becomes null
+products.c:194:55: Null storage passed as non-null param:
+                      SQLBindParameter (..., NULL)
+products.c:209:57: Null storage passed as non-null param:
+                      SQLBindCol (..., NULL)
+products.c:216:57: Null storage passed as non-null param:
+                      SQLBindCol (..., NULL)
+products.c:246:27: Null storage env passed as non-null param:
+                      odbc_disconnect (env, ...)
+   products.c:153:19: Storage env becomes null
+
+customers.c: (in function customersMenu)
+customers.c:24:12: Suspected infinite loop.  No value used in loop test
+                      (finished) is modified by test or loop body.
+  This appears to be an infinite loop. Nothing in the body of the loop or the
+  loop test modifies the value of the loop test. Perhaps the specification of a
+  function called in the loop body is missing a modification. (Use -infloops to
+  inhibit warning)
+odbc-connection-test-2.c:9:5: Function main defined more than once
+  A function or variable is redefined. One of the declarations should use
+  extern. (Use -redef to inhibit warning)
+   menu.c:53:1: Previous definition of main
+odbc-connection-test.c:9:5: Function main defined more than once
+   menu.c:53:1: Previous definition of main
+odbc.c: (in function odbc_extract_error)
+odbc.c:33:47: Format argument 3 to printf (%d) expects int gets SQLINTEGER:
+                 native
+  Type of parameter is not consistent with corresponding code in format string.
+  (Use -formattype to inhibit warning)
+   odbc.c:33:28: Corresponding format code
+orders.c: (in function ordersMenu)
+orders.c:21:12: Suspected infinite loop.  No value used in loop test (finished)
+                   is modified by test or loop body.
+orders.c: (in function orders_open)
+orders.c:101:28: Format argument 1 to printf (%d) expects int gets SQLINTEGER:
+                    x
+   orders.c:101:18: Corresponding format code
+products.c: (in function productsMenu)
+products.c:23:12: Suspected infinite loop.  No value used in loop test
+                     (finished) is modified by test or loop body.
+
