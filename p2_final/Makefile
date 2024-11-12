@@ -39,9 +39,10 @@ EXE = odbc-connection-test odbc-connection-test-2 menu
 
 all : $(EXE)
 
-test01: 
+test01:
 
 clean :
 	rm -f *.o core $(EXE)
 
 $(EXE) : % : %.o odbc.o products.o orders.o customers.o
+

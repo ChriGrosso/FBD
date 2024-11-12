@@ -160,7 +160,6 @@ static int customers_find(void) {
             odbc_extract_error("Error binding column", stmt, SQL_HANDLE_STMT);
             return FINISHED;
         }
-
         while (SQL_SUCCEEDED(ret = SQLFetch(stmt))) {
             printf("%s %s %s %s\n", customerNumber, customerName, contactFirstName,contactLastName);
             finished=1;
