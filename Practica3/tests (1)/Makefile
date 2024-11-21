@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -pedantic -ansi
 HEADERS = utils.h
 
 EXE = tester
-OBJ = $(EXE).o utils.o checkUtils.o checkCreateTable.o checkReplaceExtensionByIdx.o \
+OBJ = $(EXE).o utilstemplate.o checkUtils.o checkCreateTable.o checkReplaceExtensionByIdx.o \
 checkCreateIndex.o checkPrint.o checkFindKey.o checkAddIndexEntry.o
 #all : $(EXE)
 
