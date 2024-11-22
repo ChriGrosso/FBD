@@ -6,18 +6,14 @@ bool check_dat(const char* filename) {
     size_t len = strlen(filename);
     if(filename == NULL || !(filename[len-3] == 'd' && filename[len-2] == 'a' && filename[len-1] == 't'))
         return false;
-    
     return true;
 }
 void replaceExtensionByIdx(const char *fileName, char * indexName) {
     size_t len = strlen(fileName);
-
     strcpy(indexName,fileName);
-
     indexName[len-3] = 'i';
     indexName[len-2] = 'd';
     indexName[len-1] = 'x';
-
     return;
 }
 
@@ -61,15 +57,15 @@ bool createIndex(const char *indexName) {
 }
 void printnode(size_t _level, size_t level, FILE * indexFileHandler, int node_id, char side) {
     if (node_id == -1) {
-        return; /*Nodo null*/ 
+        return; 
     }
     fseek(indexFileHandler, node_id * sizeof(Node), SEEK_SET);
-    // Leo Nodo
+    
     Node currentNode;
     size_t i;
     fread(&currentNode, sizeof(Node), 1, indexFileHandler);
     for (i = 0; i < _level; i++) {
-        printf("\t"); /*Nivel basado en la profundidad*/
+        printf("\t"); 
     }
     printf("%c %s (%d): %d\n", side, currentNode.book_id, node_id, currentNode.offset);
     
@@ -84,7 +80,7 @@ void printTree(size_t level, const char * indexName)
     if (f == NULL) {
         return;
     }
-    printnode(0, level, f, 0, ' '); /* Empieza de la Raiz*/
+    printnode(0, level, f, 0, ' '); 
     fclose(f);
     return;
 }
