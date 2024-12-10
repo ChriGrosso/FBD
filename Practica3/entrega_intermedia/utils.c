@@ -141,7 +141,7 @@ bool findKey(const char * book_id, const char *indexName,
         return false;
     
     fread(&root,sizeof(int),1,f);
-    fseek(f,sizeof(int)*2,SEEK_SET);
+    fseek(f,root,8);
     
     while (currentOffset != -1) {
 

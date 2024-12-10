@@ -1,0 +1,23 @@
+# Nombre del archivo Makefile: makefile.cod
+
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
+OBJS = main.o utils.o
+EXEC = programa_base_de_datos
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+main.o: main.c utils.h
+	$(CC) $(CFLAGS) -c main.c
+
+utils.o: utils.c utils.h
+	$(CC) $(CFLAGS) -c utils.c
+
+clean:
+	rm -f *.o $(EXEC)
+
+run:
+	./$(EXEC)
