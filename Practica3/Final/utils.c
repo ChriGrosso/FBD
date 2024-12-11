@@ -39,14 +39,14 @@ bool createTable(const char *tableName) {
     if (f != NULL) {
         printf("Archivo ya existe\n");
         fclose(f);
+        return true;
     }
     // Crear el archivo si no existe
-    else{
-        if ((f = fopen(tableName, "wb+")) == NULL)
-            return false;
-        fwrite(&a, sizeof(int), 1, f);
-        fclose(f);
-    } 
+    if ((f = fopen(tableName, "wb+")) == NULL)
+        return false;
+    fwrite(&a, sizeof(int), 1, f);
+    fclose(f);
+    
     st = createIndex(tableName);
     return st;
 }
@@ -111,6 +111,7 @@ void printnode(size_t _level, size_t level, FILE * indexFileHandler, int node_id
     fread(&currentNode.right,sizeof(int),1,indexFileHandler);
     fread(&currentNode.parent,sizeof(int),1,indexFileHandler);
     fread(&currentNode.offset,sizeof(int),1,indexFileHandler);
+    printf("%d %d \n",currentNode.left,currentNode.right);
 
     for (i = 0; i < _level; i++) {
         printf("\t"); 
@@ -163,8 +164,8 @@ bool findKey(const char * book_id, const char *indexName,
     fseek(f,sizeof(int)*2,SEEK_SET);
     
     while (currentOffset != -1) {
-
     if(fseek(f,currentOffset * sizeof(Node) + sizeof(int)*2, SEEK_SET) !=0) {
+        printf("Offset: %d\n", currentOffset);
         printf("ERROR al buscar nodo\n");
         fclose(f);
         return false;
@@ -227,20 +228,11 @@ bool Tree_insert(Node *node, const char *indexName){
     fseek(f,0,SEEK_SET);
     fread(&root,sizeof(int),1,f);
     fread(&deleted,sizeof(int),1,f);
-    if(root==-1){
+    if(root == -1){
         max_nodeId++;
         node->parent=-1;
         fseek(f,0,SEEK_SET);
         fwrite(&max_nodeId,sizeof(int),1,f);
-
-        fseek(f,sizeof(int)*2,SEEK_SET);
-        fwrite(node->book_id,PK_SIZE *sizeof(char),1,f);
-        fwrite(&node->left,sizeof(int),1,f);
-        fwrite(&node->right,sizeof(int),1,f);
-        fwrite(&node->parent,sizeof(int),1,f);
-        fwrite(&node->offset,sizeof(int),1,f);
-        fclose(f);
-        return true;
     }
 
     if(deleted != -1) {
@@ -286,14 +278,14 @@ bool Tree_insert(Node *node, const char *indexName){
 
    else {
         max_nodeId++;
-
+        printf("%d\n",max_nodeId);
         fseek(f,0,SEEK_END);
         fwrite(node->book_id,PK_SIZE *sizeof(char),1,f);
         fwrite(&node->left,sizeof(int),1,f);
         fwrite(&node->right,sizeof(int),1,f);
         fwrite(&node->parent,sizeof(int),1,f);
         fwrite(&node->offset,sizeof(int),1,f);
-
+    
         if(fseek(f,node->parent * sizeof(Node) + sizeof(int)*2, SEEK_SET) !=0) {
             printf("ERROR al buscar nodo\n");
                 fclose(f);
@@ -312,6 +304,8 @@ bool Tree_insert(Node *node, const char *indexName){
             parent.right = max_nodeId;
             fwrite(&parent.right,sizeof(int),1,f);
         }
+
+        printf("I: %d %d %d\n",node->parent, parent.right,parent.left);
    }
 
 
@@ -341,6 +335,9 @@ bool addIndexEntry(char * book_id,  int bookOffset, char const * indexName) {
     node->left = node->right = -1;
     node->parent = parentOffset;
     node->offset = bookOffset;
+
+    printf("create: %d, %d, %d \n",node->parent, node->left,node->right);
+
     st = Tree_insert(node,indexName);
 
     free(node);
@@ -366,11 +363,11 @@ bool addTableEntry(Book * book, const char * dataName,
         fclose(f);
         return false;
     }
-    /*comprobar si hay registro borrado*/
-    /*
+    /*comprobar si hay registro borrado
+
     fseek(f,sizeof(int),SEEK_SET);
     fread(&deleted,sizeof(int),1,f);
-    
+
     if(deleted != -1) {
         fseek(f,deleted*sizeof(Book) + 2*sizeof(int),SEEK_SET);
         fread(&aux_book.book_id,sizeof(char)*PK_SIZE,4,f);
@@ -378,8 +375,7 @@ bool addTableEntry(Book * book, const char * dataName,
         fclose(f);
         return true;
     }
-    */
-    /*************/
+    ************/
 
     fseek(f,0,SEEK_END);
     offset = ftell(f);
@@ -445,5 +441,4 @@ bool addTableEntry(Book *book, const char *tableName, const char *indexName) {
     fclose(dataFile);
     return addIndexEntry(book->book_id, bookOffset, indexName);
 }
-
 */

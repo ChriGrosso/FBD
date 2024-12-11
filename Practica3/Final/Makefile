@@ -19,6 +19,6 @@ $EXE: $(DEPS) $(OBJ)
 	$(CC) -o $(EXE) $(OBJ) $(LDLIBS)
 
 clean :
-	rm -f *.o core $(EXE) *.dat *.idx
+	rm -f *.o core $(EXE)
 
 

@@ -1,7 +1,60 @@
-#include "utils.h"
-#include <string.h>
-#include <stdlib.h>
+#ifndef CODE_V2_UTILS_H
+#define CODE_V2_UTILS_H
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define NO_DELETED_REGISTERS -1
+
+#define INDEX_HEADER_SIZE 8
+#define DATA_HEADER_SIZE  4
+#define PK_SIZE 4
+
+/* Our table is going to contain a string (title) and
+   an alphanumeric primary key (book_id)
+*/
+typedef struct book {
+    char book_id[PK_SIZE ]; /* primary key */
+    size_t title_len; /* title length */
+    char *title; /* string to be saved in the database */
+} Book;
+
+/* Note that in general a struct cannot be used to
+   handle tables in databases since the table structure
+   is unknown on compilation time.
+*/
+
+typedef struct node {
+    char book_id[PK_SIZE];
+    int left, right, parent, offset;
+}Node;
+
+
+/* Function prototypes.
+   see function description in the following sections
+
+   All function return true if success or false if failed
+   except findKey which return true if register found
+   and false otherwise.
+   */
+
+bool createTable(const char * tableName);
+bool createIndex(const char * indexName);
+bool findKey(const char * book_id, const char * indexName,
+             int * nodeIDOrDataOffset);
+bool addTableEntry(Book * book, const char * tableName,
+                   const char * indexName);
+bool addIndexEntry(char * book_id, int bookOffset, const char * indexName);
+
+void printTree(size_t level, const char * indexName);
+
+/* Other functions that you may find useful
+ * change extension
+ */
+void replaceExtensionByIdx(const char * fileName, char * indexName);
+
+#endif /* CODE_V2_UTILS_H */
 
 int no_deleted_registers = NO_DELETED_REGISTERS;
 
@@ -158,7 +211,6 @@ bool findKey(const char * book_id, const char *indexName,
     if((f = fopen(indexName,"rb+")) == NULL)
         return false;
     
-    fseek(f,0,SEEK_SET);
     fread(&currentOffset,sizeof(int),1,f);
     fseek(f,sizeof(int)*2,SEEK_SET);
     
@@ -227,21 +279,6 @@ bool Tree_insert(Node *node, const char *indexName){
     fseek(f,0,SEEK_SET);
     fread(&root,sizeof(int),1,f);
     fread(&deleted,sizeof(int),1,f);
-    if(root==-1){
-        max_nodeId++;
-        node->parent=-1;
-        fseek(f,0,SEEK_SET);
-        fwrite(&max_nodeId,sizeof(int),1,f);
-
-        fseek(f,sizeof(int)*2,SEEK_SET);
-        fwrite(node->book_id,PK_SIZE *sizeof(char),1,f);
-        fwrite(&node->left,sizeof(int),1,f);
-        fwrite(&node->right,sizeof(int),1,f);
-        fwrite(&node->parent,sizeof(int),1,f);
-        fwrite(&node->offset,sizeof(int),1,f);
-        fclose(f);
-        return true;
-    }
 
     if(deleted != -1) {
         fseek(f,4*sizeof(Node) + sizeof(int)*2,SEEK_SET);
@@ -347,53 +384,51 @@ bool addIndexEntry(char * book_id,  int bookOffset, char const * indexName) {
     return st;
 }
 
-bool addTableEntry(Book * book, const char * dataName,
-                   const char * indexName) {
+// bool addTableEntry(Book * book, const char * dataName,
+//                    const char * indexName) {
     
-    FILE *f;
-    int offset = -1;
-    int lenTitle;
-    int deleted;
-    Book aux_book;
-    printf("%s\n",book->book_id);
-    if((f = fopen(dataName,"ab")) == NULL) {
-        printf("Error al abrir archivo\n");
-        return false;
-    }
+//     FILE *f;
+//     int offset = -1;
+//     int lenTitle;
+//     int deleted;
+//     Book aux_book;
+//     printf("%s\n",book->book_id);
+//     if((f = fopen(dataName,"ab")) == NULL) {
+//         printf("Error al abrir archivo\n");
+//         return false;
+//     }
     
-    if(findKey(book->book_id,indexName, &offset) == true) {
-        printf("El libro ya existe\n");
-        fclose(f);
-        return false;
-    }
-    /*comprobar si hay registro borrado*/
-    /*
-    fseek(f,sizeof(int),SEEK_SET);
-    fread(&deleted,sizeof(int),1,f);
-    
-    if(deleted != -1) {
-        fseek(f,deleted*sizeof(Book) + 2*sizeof(int),SEEK_SET);
-        fread(&aux_book.book_id,sizeof(char)*PK_SIZE,4,f);
+//     if(findKey(book->book_id,indexName, &offset) == true) {
+//         printf("El libro ya existe\n");
+//         fclose(f);
+//         return false;
+//     }
+//     /*comprobar si hay registro borrado*/
+
+//     fseek(f,sizeof(int),SEEK_SET);
+//     fread(&deleted,sizeof(int),1,f);
+
+//     if(deleted != -1) {
+//         fseek(f,deleted*sizeof(Book) + 2*sizeof(int),SEEK_SET);
+//         fread(&aux_book.book_id,sizeof(char)*PK_SIZE,4,f);
         
-        fclose(f);
-        return true;
-    }
-    */
-    /*************/
+//         fclose(f);
+//         return true;
+//     }
+//     /*************/
 
-    fseek(f,0,SEEK_END);
-    offset = ftell(f);
-    lenTitle = strlen (book->title ) ;
-    fwrite ( book->book_id , PK_SIZE, 1 , f ) ;
-    fwrite ( &lenTitle ,sizeof ( int ) , 1 , f ) ;
-    fwrite ( book->title ,lenTitle , 1 , f ) ;
-    fclose(f);
+//     fseek(f,0,SEEK_END);
+//     lenTitle = strlen (book->title ) ;
+//     fwrite ( book->book_id , PK_SIZE, 1 , f ) ;
+//     fwrite ( &lenTitle ,sizeof ( int ) , 1 , f ) ;
+//     fwrite ( book->title ,lenTitle , 1 , f ) ;
+//     fclose(f);
 
-    
-    return addIndexEntry(book->book_id,offset,indexName);
-}
+//     addIndexEntry(book->book_id,offset,indexName);
+//     return true;
+// }
 
-/*
+
 bool addTableEntry(Book *book, const char *tableName, const char *indexName) {
     FILE *dataFile;
     int deletedOffset;
@@ -446,4 +481,155 @@ bool addTableEntry(Book *book, const char *tableName, const char *indexName) {
     return addIndexEntry(book->book_id, bookOffset, indexName);
 }
 
-*/
+// Variables globales para gestionar el estado del programa
+char tablaActual[100] = ""; // Nombre de la tabla en uso
+char indiceActual[100] = ""; // Nombre del archivo índice correspondiente
+
+void menu();
+
+int main() {
+    menu();
+    return 0;
+}
+
+void menu() {
+    int opcion;
+    bool tablaSeleccionada = false;
+
+    do {
+        printf("\n=== Menú Interfaz de Usuario ===\n");
+        printf("1. Use (Seleccionar una tabla)\n");
+        printf("2. Insert (Agregar un registro a la tabla)\n");
+        printf("3. Print (Imprimir el árbol binario de la tabla)\n");
+        printf("4. Exit (Salir)\n");
+        printf("Elige una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1: { // Use
+                printf("Ingresa el nombre de la tabla (.dat): ");
+                scanf("%s", tablaActual);
+
+                if (check_dat(tablaActual)) {
+                    if (createTable(tablaActual)) {
+                        replaceExtensionByIdx(tablaActual, indiceActual);
+                        printf("Tabla '%s' seleccionada y lista para usar.\n", tablaActual);
+                        tablaSeleccionada = true;
+                    } else {
+                        printf("Error: no se pudo seleccionar o crear la tabla.\n");
+                        tablaSeleccionada = false;
+                    }
+                } else {
+                    printf("Error: el nombre de la tabla debe terminar con '.dat'.\n");
+                    tablaSeleccionada = false;
+                }
+                break;
+            }
+
+            case 2: { // Insert
+                if (!tablaSeleccionada) {
+                    printf("Error: selecciona una tabla primero usando la opción 'Use'.\n");
+                } else {
+                    char book_id[4];
+                    char title[256];
+                    Book nuevoLibro;
+
+                    printf("Ingresa el ID del libro (4 caracteres): ");
+                    scanf("%4s", book_id); // Limitar a 4 caracteres
+
+                    // Consumir cualquier carácter restante en el búfer de entrada
+                    int ch;
+                    while ((ch = getchar()) != '\n' && ch != EOF);
+
+                    strncpy(nuevoLibro.book_id, book_id, 4);
+
+                    // Leer el título del libro
+                    printf("Ingresa el título del libro: ");
+                    if (fgets(title, sizeof(title), stdin) != NULL) {
+                        // Eliminar el carácter de nueva línea si está presente
+                        size_t len = strlen(title)-1;
+                        // Asignar memoria para el título
+                        nuevoLibro.title_len = len;
+                        nuevoLibro.title = malloc((len) * sizeof(char));
+                        if (nuevoLibro.title == NULL) {
+                            printf("Error: no se pudo asignar memoria para el título.\n");
+                            break;
+                        }
+                        strncpy(nuevoLibro.title, title, len);
+                    } else {
+                        printf("Error al leer el título del libro.\n");
+                        break;
+                    }
+
+                    // Agregar el libro a la tabla
+                    if (addTableEntry(&nuevoLibro, tablaActual, indiceActual)) {
+                        printf("Libro agregado correctamente a la tabla.\n");
+                    } else {
+                        printf("Error: no se pudo agregar el libro.\n");
+                    }
+
+                    // Liberar memoria asignada para el título
+                    free(nuevoLibro.title);
+                }
+                break;
+}
+
+            case 3: { // Print
+                if (!tablaSeleccionada) {
+                    printf("Error: selecciona una tabla primero usando la opción 'Use'.\n");
+                } else {
+                    size_t nivelMaximo;
+                    printf("Ingresa el nivel máximo a imprimir: ");
+                    scanf("%zu", &nivelMaximo);
+
+                    printf("Imprimiendo el árbol binario de la tabla '%s':\n", tablaActual);
+                    printTree(nivelMaximo, indiceActual);
+                }
+                break;
+            }
+
+            case 4: { // Exit
+                printf("Saliendo del programa.\n");
+                // Limpieza adicional si es necesaria
+                break;
+            }
+
+            case 5: {
+                FILE *file;
+                const char *filename = "MB2.dat";
+                char buffer[1024]; // Buffer per leggere i dati
+                size_t bytesRead;
+
+                // Aprire il file in modalità binaria per la lettura
+                file = fopen(filename, "rb");
+                if (file == NULL) {
+                    perror("Errore nell'apertura del file");
+                    return EXIT_FAILURE;
+                }
+
+                printf("Contenuto tradotto del file %s:\n", filename);
+
+                // Leggere i dati dal file
+                while ((bytesRead = fread(buffer, 1, sizeof(buffer) - 1, file)) > 0) {
+                    buffer[bytesRead] = '\0'; // Aggiungere un terminatore di stringa
+                    printf("%s", buffer);    // Stampa il contenuto come stringa
+                }
+
+                if (ferror(file)) {
+                    perror("Errore nella lettura del file");
+                    fclose(file);
+                    return EXIT_FAILURE;
+                }
+
+                // Chiudere il file
+                fclose(file);
+                printf("\nFile letto e tradotto con successo.\n");
+
+                return EXIT_SUCCESS;
+            }
+
+            default:
+                printf("Error: opción no válida. Intenta de nuevo.\n");
+        }
+    } while (opcion != 4);
+}

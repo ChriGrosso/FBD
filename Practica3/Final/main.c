@@ -85,7 +85,7 @@ void menu() {
                     }
 
                     // Agregar el libro a la tabla
-                    if (addTableEntry(&nuevoLibro, tablaActual, indiceActual)) {
+                    if (addTableEntry(&nuevoLibro, tablaActual, indiceActual) == true) {
                         printf("Libro agregado correctamente a la tabla.\n");
                     } else {
                         printf("Error: no se pudo agregar el libro.\n");
