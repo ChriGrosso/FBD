@@ -7,7 +7,7 @@
 // Variables globales para gestionar el estado del programa
 char tablaActual[100] = ""; // Nombre de la tabla en uso
 char indiceActual[100] = ""; // Nombre del archivo índice correspondiente
-
+enum {USE = 1, INSERT, PRINT, EXIT};
 void menu();
 
 int main() {
@@ -29,7 +29,7 @@ void menu() {
         scanf("%d", &opcion);
 
         switch (opcion) {
-            case 1: { // Use
+            case USE: { 
                 printf("Ingresa el nombre de la tabla (.dat): ");
                 scanf("%s", tablaActual);
 
@@ -49,7 +49,7 @@ void menu() {
                 break;
             }
 
-            case 2: { // Insert
+            case INSERT: {
                 if (!tablaSeleccionada) {
                     printf("Error: selecciona una tabla primero usando la opción 'Use'.\n");
                 } else {
@@ -85,7 +85,7 @@ void menu() {
                     }
 
                     // Agregar el libro a la tabla
-                    if (addTableEntry(&nuevoLibro, tablaActual, indiceActual)) {
+                    if (addTableEntry(&nuevoLibro, tablaActual, indiceActual) == true) {
                         printf("Libro agregado correctamente a la tabla.\n");
                     } else {
                         printf("Error: no se pudo agregar el libro.\n");
@@ -97,7 +97,7 @@ void menu() {
                 break;
 }
 
-            case 3: { // Print
+            case PRINT: { 
                 if (!tablaSeleccionada) {
                     printf("Error: selecciona una tabla primero usando la opción 'Use'.\n");
                 } else {
@@ -111,44 +111,10 @@ void menu() {
                 break;
             }
 
-            case 4: { // Exit
+            case EXIT: {
                 printf("Saliendo del programa.\n");
                 // Limpieza adicional si es necesaria
                 break;
-            }
-
-            case 5: {
-                FILE *file;
-                const char *filename = "MB2.dat";
-                char buffer[1024]; // Buffer per leggere i dati
-                size_t bytesRead;
-
-                // Aprire il file in modalità binaria per la lettura
-                file = fopen(filename, "rb");
-                if (file == NULL) {
-                    perror("Errore nell'apertura del file");
-                    return EXIT_FAILURE;
-                }
-
-                printf("Contenuto tradotto del file %s:\n", filename);
-
-                // Leggere i dati dal file
-                while ((bytesRead = fread(buffer, 1, sizeof(buffer) - 1, file)) > 0) {
-                    buffer[bytesRead] = '\0'; // Aggiungere un terminatore di stringa
-                    printf("%s", buffer);    // Stampa il contenuto come stringa
-                }
-
-                if (ferror(file)) {
-                    perror("Errore nella lettura del file");
-                    fclose(file);
-                    return EXIT_FAILURE;
-                }
-
-                // Chiudere il file
-                fclose(file);
-                printf("\nFile letto e tradotto con successo.\n");
-
-                return EXIT_SUCCESS;
             }
 
             default:
