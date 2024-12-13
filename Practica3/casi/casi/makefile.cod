@@ -1,23 +1,44 @@
 # Nombre del archivo Makefile: makefile.cod
 
+# Definimos el compilador que se usará (gcc)
 CC = gcc
+
+# Bandera de compilación:
+# -Wall: Activa todas las advertencias
+# -Wextra: Activa advertencias adicionales
+# -std=c89: Estándar de C89
 CFLAGS = -Wall -Wextra -std=c89
+
+# Lista de archivos objeto que forman parte del proyecto
 OBJS = main.o utils.o
+
+# Nombre del archivo ejecutable que se generará
 EXEC = programa_base_de_datos
 
+# Regla predeterminada: compila todo el proyecto y genera el ejecutable
 all: $(EXEC)
 
+# Regla para generar el ejecutable a partir de los archivos objeto
 $(EXEC): $(OBJS)
+	# Enlaza los archivos objeto para crear el ejecutable
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
+# Regla para compilar main.c y generar el archivo objeto main.o
+# Se asegura de recompilar si cambia el archivo utils.h
 main.o: main.c utils.h
 	$(CC) $(CFLAGS) -c main.c
 
+# Regla para compilar utils.c y generar el archivo objeto utils.o
+# También verifica dependencias con utils.h
 utils.o: utils.c utils.h
 	$(CC) $(CFLAGS) -c utils.c
 
+# Regla para limpiar los archivos generados (archivos objeto y ejecutable)
 clean:
+	# Elimina los archivos objeto (*.o) y el ejecutable generado
 	rm -f *.o $(EXEC)
 
+# Regla para ejecutar el programa
 run:
+	# Ejecuta el programa generado
 	./$(EXEC)

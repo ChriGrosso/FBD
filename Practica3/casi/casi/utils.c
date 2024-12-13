@@ -3,19 +3,44 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/*
+ * @brief Variable global que almacena el número de registros eliminados.
+ */
 int no_deleted_registers = NO_DELETED_REGISTERS;
 
+/*
+ * @brief Variable global que guarda el ID máximo de nodo en el árbol.
+ */
 unsigned long max_nodeId = 0;
 
+/*
+ * @brief Actualiza la variable global `max_nodeId` si el valor proporcionado es mayor.
+ * 
+ * @param n Nuevo ID de nodo que se compara con el valor actual de `max_nodeId`.
+ */
 void get_max_nodeId(unsigned long n) {
     if(n> max_nodeId) max_nodeId = n;
 }
+
+/*
+ * @brief Verifica si el nombre de archivo proporcionado tiene la extensión `.dat`.
+ * 
+ * @param filename Nombre del archivo a verificar.
+ * @return true si el archivo tiene la extensión `.dat`, false en caso contrario.
+ */
 bool check_dat(const char* filename) {
     size_t len = strlen(filename);
     if(filename == NULL || !(filename[len-3] == 'd' && filename[len-2] == 'a' && filename[len-1] == 't'))
         return false;
     return true;
 }
+
+/*
+ * @brief Reemplaza la extensión `.dat` de un archivo por `.idx`.
+ * 
+ * @param fileName Nombre del archivo original.
+ * @param indexName Nombre resultante con la extensión modificada.
+ */
 void replaceExtensionByIdx(const char *fileName, char * indexName) {
     size_t len = strlen(fileName);
     strcpy(indexName,fileName);
@@ -25,7 +50,12 @@ void replaceExtensionByIdx(const char *fileName, char * indexName) {
     return;
 }
 
-
+/*
+ * @brief Crea un archivo de tabla con el nombre proporcionado, inicializando su contenido.
+ * 
+ * @param tableName Nombre del archivo de tabla a crear.
+ * @return true si se crea o se encuentra la tabla correctamente, false en caso de error.
+ */
 bool createTable(const char * tableName) {
     FILE *f = NULL;
     int a = -1;
@@ -53,6 +83,12 @@ bool createTable(const char * tableName) {
     
 }
 
+/*
+ * @brief Crea un archivo de índice asociado a una tabla, inicializando su estructura.
+ * 
+ * @param indexName Nombre del archivo de índice a crear.
+ * @return true si se crea correctamente, false en caso de error.
+ */
 bool createIndex(const char *indexName) {
     FILE *f = NULL;
     int a = -1;
@@ -88,6 +124,15 @@ bool createIndex(const char *indexName) {
     return true;
 
 }
+/*
+ * @brief Imprime un nodo específico del árbol binario desde un archivo de índice.
+ * 
+ * @param _level Nivel actual en el árbol.
+ * @param level Nivel máximo a imprimir.
+ * @param indexFileHandler Manejador del archivo de índice.
+ * @param node_id ID del nodo a imprimir.
+ * @param side Indica si el nodo es izquierdo ('l') o derecho ('r').
+ */
 void printnode(size_t _level, size_t level, FILE * indexFileHandler, int node_id, char side) {
 
     Node currentNode;
@@ -127,6 +172,12 @@ void printnode(size_t _level, size_t level, FILE * indexFileHandler, int node_id
     return;
 }
 
+/*
+ * @brief Imprime el árbol binario hasta un nivel dado desde un archivo de índice.
+ * 
+ * @param level Nivel máximo a imprimir.
+ * @param indexName Nombre del archivo de índice.
+ */
 void printTree(size_t level, const char * indexName)
 {
     FILE *f;
@@ -148,6 +199,14 @@ void printTree(size_t level, const char * indexName)
     return;
 }
 
+/*
+ * @brief Busca una clave específica en el archivo de índice.
+ * 
+ * @param book_id ID del libro a buscar.
+ * @param indexName Nombre del archivo de índice.
+ * @param nodeIDOrDataOffset Dirección para almacenar el resultado de la búsqueda.
+ * @return true si encuentra la clave, false si no la encuentra.
+ */
 bool findKey(const char * book_id, const char *indexName,
              int * nodeIDOrDataOffset)
  {
@@ -198,6 +257,19 @@ bool findKey(const char * book_id, const char *indexName,
     return false;
  }
 
+/*
+ * @brief Lee los datos de un nodo desde un archivo y los almacena en una estructura `Node`.
+ * 
+ * Esta función extrae información de un nodo almacenado en un archivo binario y la carga 
+ * en una estructura `Node` proporcionada. Los campos leídos incluyen el ID del libro, 
+ * los punteros izquierdo y derecho, el nodo padre, y el offset en el archivo de datos.
+ * 
+ * @param node Puntero a la estructura `Node` donde se almacenarán los datos leídos.
+ * @param f Manejador del archivo binario que contiene los datos del nodo.
+ * 
+ * @note Si el manejador del archivo o el puntero al nodo son nulos, la función no realiza 
+ *       ninguna operación y retorna inmediatamente.
+ */
 void node_read(Node *node, FILE *f) {
     char book_id[4];
     int left, right, parent, offset;
@@ -213,6 +285,13 @@ void node_read(Node *node, FILE *f) {
     node->left = left;
 }
 
+/*
+ * @brief Inserta un nuevo nodo en el árbol binario representado en un archivo de índice.
+ * 
+ * @param node Nodo a insertar.
+ * @param indexName Nombre del archivo de índice.
+ * @return true si se inserta correctamente, false en caso de error.
+ */
 bool Tree_insert(Node *node, const char *indexName){
     Node parent,deletedNode;
     FILE *f;
@@ -325,6 +404,14 @@ bool Tree_insert(Node *node, const char *indexName){
 
 }
 
+/*
+ * @brief Agrega una entrada al índice asociado con la tabla.
+ * 
+ * @param book_id ID del libro.
+ * @param bookOffset Offset del libro en el archivo de datos.
+ * @param indexName Nombre del archivo de índice.
+ * @return true si se agrega correctamente, false en caso de error.
+ */
 bool addIndexEntry(char * book_id,  int bookOffset, char const * indexName) {
     int parentOffset;
     Node *node;
@@ -353,8 +440,15 @@ bool addIndexEntry(char * book_id,  int bookOffset, char const * indexName) {
     return st;
 }
 
-bool addTableEntry(Book * book, const char * dataName,
-                   const char * indexName) {
+/*
+ * @brief Agrega un registro de libro a la tabla y su índice asociado.
+ * 
+ * @param book Información del libro a agregar.
+ * @param dataName Nombre del archivo de datos.
+ * @param indexName Nombre del archivo de índice.
+ * @return true si se agrega correctamente, false en caso de error.
+ */
+bool addTableEntry(Book * book, const char * dataName, const char * indexName) {
     
     FILE *f;
     int offset = -1;
